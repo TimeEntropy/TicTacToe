@@ -1,0 +1,33 @@
+[gd_scene load_steps=3 format=3 uid="uid://d0idwtwk5cmg0"]
+
+[ext_resource type="Script" path="res://schema/object/cell.gd" id="1_nxqe1"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6j4dm"]
+resource_local_to_scene = true
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0, 0, 0, 0)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 1)
+expand_margin_left = 1.0
+expand_margin_top = 1.0
+expand_margin_right = 1.0
+expand_margin_bottom = 1.0
+
+[node name="cell" type="PanelContainer"]
+custom_minimum_size = Vector2(16, 16)
+offset_right = 16.0
+offset_bottom = 16.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_6j4dm")
+script = ExtResource("1_nxqe1")
+
+[node name="centered" type="CenterContainer" parent="."]
+layout_mode = 2
+
+[connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]

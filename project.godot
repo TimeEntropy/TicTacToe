@@ -15,6 +15,11 @@ run/main_scene="res://scene/sandbox.tscn"
 config/features=PackedStringArray("4.2", "GL Compatibility")
 config/icon="res://asset/image/icon.png"
 
+[debug]
+
+gdscript/warnings/integer_division=0
+gdscript/warnings/int_as_enum_without_cast=0
+
 [display]
 
 window/size/viewport_width=800

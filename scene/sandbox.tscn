@@ -13,6 +13,8 @@ grow_vertical = 2
 stretch = true
 
 [node name="viewport" type="SubViewport" parent="game_layer/world"]
+handle_input_locally = false
 size = Vector2i(800, 800)
+render_target_update_mode = 4
 
 [node name="gui_layer" type="CanvasLayer" parent="."]

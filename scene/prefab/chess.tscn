@@ -1,0 +1,18 @@
+[gd_scene load_steps=5 format=3 uid="uid://cps2fs4o2djip"]
+
+[ext_resource type="Texture2D" uid="uid://da5xqscem0k0e" path="res://asset/image/icon.png" id="1_i0k4x"]
+[ext_resource type="Script" path="res://schema/core/image_storage.gd" id="2_e0i3g"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hhqjk"]
+atlas = ExtResource("1_i0k4x")
+region = Rect2(25, 25, 14, 14)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4j7eb"]
+atlas = ExtResource("1_i0k4x")
+region = Rect2(40, 25, 14, 14)
+
+[node name="chess" type="Sprite2D"]
+
+[node name="images" type="Node" parent="."]
+script = ExtResource("2_e0i3g")
+images = Array[Texture2D]([SubResource("AtlasTexture_hhqjk"), SubResource("AtlasTexture_4j7eb")])

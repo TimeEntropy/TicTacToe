@@ -1,0 +1,9 @@
+{
+	"configurations": [
+		{
+			"name": "Pinned",
+			"type": "godot",
+			"request": "launch",
+		}
+	]
+}

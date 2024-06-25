@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3 uid="uid://dy5n38bh77hrq"]
+
+[ext_resource type="Script" path="res://schema/object/border.gd" id="1_dulgy"]
+
+[node name="border" type="GridContainer"]
+offset_left = 46.0
+offset_top = 18.0
+offset_right = 46.0
+offset_bottom = 18.0
+theme_override_constants/h_separation = 1
+theme_override_constants/v_separation = 1
+script = ExtResource("1_dulgy")
+layout = Vector2i(5, 3)
