@@ -13,7 +13,7 @@ signal dropped_chess(cell:BoardCell)
 func _gui_input(event: InputEvent) -> void:
 	if (event is InputEventMouseButton) and event.is_pressed():
 		match event.button_index:
-			MOUSE_BUTTON_LEFT : drop_chess()
+			MOUSE_BUTTON_LEFT : dropped_chess.emit(self)
 	pass
 
 #endregion
@@ -47,15 +47,6 @@ func change_border_width(border_flag:int, width:int) -> void:
 		ENUMS.CELL_BORDER_FLAGS.UP   : style_box.border_width_top    = width
 		ENUMS.CELL_BORDER_FLAGS.RIGHT: style_box.border_width_right  = width
 		ENUMS.CELL_BORDER_FLAGS.DOWN : style_box.border_width_bottom = width
-	pass
-
-func drop_chess() -> void:
-	if get_child_count() < 1:
-		print('dropped')
-		var chess := preload("res://scene/prefab/chess.tscn").instantiate()
-		chess.position = pivot_offset
-		add_child(chess)
-		dropped_chess.emit(self)
 	pass
 
 #endregion

@@ -3,14 +3,14 @@ extends GridContainer
 var ENUMS := preload("res://schema/core/enum.gd").new()
 
 @export_group('node')
-@export var image_storage : Node
 
 @export_group('data')
-@export var layout := Vector2i.ZERO : set = set_layout
+@export var layout  := Vector2i.ZERO : set = set_layout
+@export var players : Array[Node] = []
 
-var cells  := {}
-var score  := {}
-var player := 0
+var cells   := {}
+var score   := {}
+var current_player := 0
 
 #region overrides
 
@@ -22,8 +22,7 @@ func _ready() -> void:
 #region events
 
 func _on_cell_dropped_chess(cell:BoardCell) -> void:
-	score[cell.coords] = player
-	player = wrapi(player + 1, 0, image_storage.images.size())
+	drop_chess(cell)
 	pass
 
 #endregion
@@ -67,5 +66,39 @@ func hide_border() -> void:
 		elif coord.y == 0:
 			cell.change_border_width(ENUMS.CELL_BORDER_FLAGS.UP   , 0)
 	pass
+
+func drop_chess(cell:BoardCell) -> void:
+	if cell.get_child_count() < 1:
+		var chess := preload("res://scene/prefab/chess.tscn").instantiate()
+		chess.position = cell.pivot_offset
+		chess.texture  = players[current_player].used_chess_image
+		cell.add_child(chess)
+		score[cell.coords] = current_player
+		if check_chess_inline(current_player):
+			print('player {0} win!!!'.format([players[current_player].nickname]))
+		current_player = wrapi(current_player + 1, 0, players.size())
+	pass
+
+func check_chess_inline(player_id:int, length:=3) -> bool:
+	var CHECK_AXIS_INLINE := func(coords:Vector2i, dir:Vector2i) -> bool:
+		for i in length:
+			var tcrds := coords + i * dir
+			var tid   := score.get(tcrds, -1) as int
+			if tid != player_id:
+				return false
+		return true
+
+	var CHECK_INLINE := func(coords:Vector2i) -> bool:
+		var x_axis := CHECK_AXIS_INLINE.call(coords, Vector2i(1, 0)) as bool
+		var y_axis := CHECK_AXIS_INLINE.call(coords, Vector2i(0, 1)) as bool
+		var toeing := CHECK_AXIS_INLINE.call(coords, Vector2i(1, 1)) as bool
+		return x_axis or y_axis or toeing
+
+	for y in layout.y:
+		for x in layout.x:
+			var result := CHECK_INLINE.call(Vector2i(x, y)) as bool
+			if result:
+				return true
+	return false
 
 #endregion
