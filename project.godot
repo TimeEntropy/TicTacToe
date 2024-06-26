@@ -15,6 +15,10 @@ run/main_scene="res://scene/sandbox.tscn"
 config/features=PackedStringArray("4.2", "GL Compatibility")
 config/icon="res://asset/image/icon.png"
 
+[autoload]
+
+Gameplay="*res://schema/manager/gameplay.gd"
+
 [debug]
 
 gdscript/warnings/integer_division=0

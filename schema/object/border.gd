@@ -2,7 +2,15 @@ extends GridContainer
 
 var ENUMS := preload("res://schema/core/enum.gd").new()
 
+@export_group('node')
+@export var image_storage : Node
+
+@export_group('data')
 @export var layout := Vector2i.ZERO : set = set_layout
+
+var cells  := {}
+var score  := {}
+var player := 0
 
 #region overrides
 
@@ -11,17 +19,36 @@ func _ready() -> void:
 
 #endregion
 
+#region events
+
+func _on_cell_dropped_chess(cell:BoardCell) -> void:
+	score[cell.coords] = player
+	player = wrapi(player + 1, 0, image_storage.images.size())
+	pass
+
+#endregion
+
 #region tools
 
-func set_layout(value:Vector2i) -> void:
+func clear() -> void:
+	cells.clear()
+	score.clear()
 	for child in get_children():
 		child.queue_free()
+	pass
+
+func set_layout(value:Vector2i) -> void:
+	clear()
 	layout = value
 	self.size = Vector2.ZERO
 	self.columns = value.x
-	for i in (value.x * value.y):
-		var cell := preload("res://scene/prefab/cell.tscn").instantiate()
-		add_child(cell)
+	for y in value.y:
+		for x in value.x:
+			var cell := preload("res://scene/prefab/cell.tscn").instantiate()
+			cell.dropped_chess.connect(_on_cell_dropped_chess)
+			cell.coords = Vector2i(x, y)
+			add_child(cell)
+			cells[cell.coords] = cell
 	pass
 
 func hide_border() -> void:

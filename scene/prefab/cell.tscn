@@ -23,11 +23,11 @@ expand_margin_bottom = 1.0
 custom_minimum_size = Vector2(16, 16)
 offset_right = 16.0
 offset_bottom = 16.0
+pivot_offset = Vector2(8, 8)
+size_flags_horizontal = 3
+size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_6j4dm")
 script = ExtResource("1_nxqe1")
-
-[node name="centered" type="CenterContainer" parent="."]
-layout_mode = 2
 
 [connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
 [connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]

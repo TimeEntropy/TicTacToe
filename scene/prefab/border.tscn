@@ -1,8 +1,11 @@
-[gd_scene load_steps=2 format=3 uid="uid://dy5n38bh77hrq"]
+[gd_scene load_steps=5 format=3 uid="uid://dy5n38bh77hrq"]
 
 [ext_resource type="Script" path="res://schema/object/border.gd" id="1_dulgy"]
+[ext_resource type="Script" path="res://schema/core/image_storage.gd" id="2_wj4id"]
+[ext_resource type="Texture2D" uid="uid://cqyak7pqy6c1g" path="res://asset/image/chess/circle.png" id="3_vugjo"]
+[ext_resource type="Texture2D" uid="uid://bwxsnu3vf8wvq" path="res://asset/image/chess/cross.png" id="4_mcky7"]
 
-[node name="border" type="GridContainer"]
+[node name="border" type="GridContainer" node_paths=PackedStringArray("image_storage")]
 offset_left = 46.0
 offset_top = 18.0
 offset_right = 46.0
@@ -10,4 +13,9 @@ offset_bottom = 18.0
 theme_override_constants/h_separation = 1
 theme_override_constants/v_separation = 1
 script = ExtResource("1_dulgy")
-layout = Vector2i(5, 3)
+image_storage = NodePath("images")
+layout = Vector2i(3, 3)
+
+[node name="images" type="Node" parent="."]
+script = ExtResource("2_wj4id")
+images = Array[Texture2D]([ExtResource("3_vugjo"), ExtResource("4_mcky7")])

@@ -4,6 +4,7 @@
 			"name": "Pinned",
 			"type": "godot",
 			"request": "launch",
+			"scene": "pinned"
 		}
 	]
 }
