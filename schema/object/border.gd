@@ -6,11 +6,12 @@ var ENUMS := preload("res://schema/core/enum.gd").new()
 
 @export_group('data')
 @export var layout  := Vector2i.ZERO : set = set_layout
-@export var players : Array[Node] = []
+@export var players : Array[PlayerProfile] = []
 
 var cells   := {}
 var score   := {}
-var current_player := 0
+var current_player  := 0
+var rest_cell_count := 0
 
 #region overrides
 
@@ -48,6 +49,7 @@ func set_layout(value:Vector2i) -> void:
 			cell.coords = Vector2i(x, y)
 			add_child(cell)
 			cells[cell.coords] = cell
+	rest_cell_count = value.x * value.y
 	pass
 
 func hide_border() -> void:
@@ -74,8 +76,13 @@ func drop_chess(cell:BoardCell) -> void:
 		chess.texture  = players[current_player].used_chess_image
 		cell.add_child(chess)
 		score[cell.coords] = current_player
+		rest_cell_count -= 1
+
 		if check_chess_inline(current_player):
 			print('player {0} win!!!'.format([players[current_player].nickname]))
+		elif is_draw():
+			print('draw! no player win!')
+
 		current_player = wrapi(current_player + 1, 0, players.size())
 	pass
 
@@ -100,5 +107,11 @@ func check_chess_inline(player_id:int, length:=3) -> bool:
 			if result:
 				return true
 	return false
+
+func is_win(player_id:int) -> bool:
+	return check_chess_inline(player_id)
+
+func is_draw() -> bool:
+	return rest_cell_count <= 0
 
 #endregion
