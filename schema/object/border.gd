@@ -10,7 +10,10 @@ var cells := {}
 var score := {}
 var current_player  := 0 : set = _set_current_player
 var rest_cell_count := 0
+var turn_count := 0
+var history := UndoRedo.new()
 
+signal chess_dropped(coords:Vector2i)
 signal player_changed(current:int)
 signal duel_win(player_id:int)
 signal duel_draw()
@@ -22,22 +25,12 @@ signal duel_draw()
 #region events
 
 func _on_cell_dropped_chess(cell:BoardCell) -> void:
-	if cell.get_child_count() < 1:
-		var chess := preload("res://scene/prefab/chess.tscn").instantiate()
-		chess.position = cell.pivot_offset
-		chess.texture  = players[current_player].used_chess_image
-		cell.add_child(chess)
-		score[cell.coords] = current_player
-		rest_cell_count -= 1
-
-		if is_win(current_player):
-			duel_win.emit(current_player)
-			return
-		elif is_draw():
-			disable_cell_drop()
-			duel_draw.emit()
-
-		current_player = wrapi(current_player + 1, 0, players.size())
+	history.create_action(String.num(turn_count))
+	history.add_do_method(drop.bind(cell))
+	history.add_do_property(self, 'current_player', wrapi(current_player + 1, 0, players.size()))
+	history.add_undo_method(pick.bind(cell))
+	history.add_undo_property(self, 'current_player', current_player)
+	history.commit_action()
 	pass
 
 #endregion
@@ -96,6 +89,11 @@ func check_chess_inline(player_id:int, length:=3) -> Array[Vector2i]:
 				return result
 	return []
 
+func let_win(player_id:int) -> void:
+	disable_cell_drop()
+	duel_win.emit(player_id)
+	pass
+
 func is_win(player_id:int) -> bool:
 	var result := check_chess_inline(player_id, win_count)
 	if !result.is_empty():
@@ -114,6 +112,36 @@ func disable_cell_drop() -> void:
 	for c:BoardCell in cells.values():
 		c.handle_drop = false
 	pass
+
+func drop(cell:BoardCell) -> void:
+	if cell.get_child_count() < 1:
+		var chess := preload("res://scene/prefab/chess.tscn").instantiate()
+		chess.position = cell.pivot_offset
+		chess.texture  = players[current_player].used_chess_image
+		cell.add_child(chess)
+		score[cell.coords] = current_player
+		rest_cell_count -= 1
+		chess_dropped.emit(cell.coords)
+
+		if is_win(current_player):
+			let_win(current_player)
+			return
+		elif is_draw():
+			disable_cell_drop()
+			duel_draw.emit()
+		current_player = wrapi(current_player + 1, 0, players.size())
+		turn_count += 1
+	pass
+
+func pick(cell:BoardCell) -> void:
+	if cell.get_child_count() > 0:
+		for child in cell.get_children():
+			child.queue_free()
+	score[cell.coords] = -1
+	rest_cell_count += 1
+	turn_count -= 1
+	pass
+
 
 #endregion
 

@@ -82,7 +82,7 @@ expand_margin_top = 1.0
 expand_margin_right = 1.0
 expand_margin_bottom = 1.0
 
-[node name="sandbox" type="Node" node_paths=PackedStringArray("game_viewport", "camera", "win_prompt", "pointing", "info_PC", "info_ME", "button_replay", "button_undo", "button_surrender")]
+[node name="sandbox" type="Node" node_paths=PackedStringArray("game_viewport", "camera", "win_prompt", "pointing", "info_PC", "info_ME", "button_replay", "button_undo", "button_giveup")]
 script = ExtResource("1_mhra8")
 game_viewport = NodePath("layout/margin/aspect/game/world/viewport")
 camera = NodePath("layout/margin/aspect/game/world/viewport/camera")
@@ -92,7 +92,7 @@ info_PC = NodePath("layout/infos/margin_1/PC/info")
 info_ME = NodePath("layout/infos/margin_2/ME/info")
 button_replay = NodePath("layout/infos/margin_2/ME/buttons/replay")
 button_undo = NodePath("layout/infos/margin_2/ME/buttons/undo")
-button_surrender = NodePath("layout/infos/margin_2/ME/buttons/giveup")
+button_giveup = NodePath("layout/infos/margin_2/ME/buttons/giveup")
 
 [node name="border" type="Panel" parent="."]
 anchors_preset = 15
@@ -141,7 +141,7 @@ stretch_shrink = 3
 
 [node name="viewport" type="SubViewport" parent="layout/margin/aspect/game/world"]
 handle_input_locally = false
-size = Vector2i(78, 78)
+size = Vector2i(2, 2)
 render_target_update_mode = 4
 
 [node name="camera" type="Camera2D" parent="layout/margin/aspect/game/world/viewport"]
