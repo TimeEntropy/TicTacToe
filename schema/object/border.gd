@@ -90,7 +90,7 @@ func check_chess_inline(player_id:int, length:=3) -> Array[Vector2i]:
 	return []
 
 func let_win(player_id:int) -> void:
-	disable_cell_drop()
+	set_cell_droppable(false)
 	duel_win.emit(player_id)
 	pass
 
@@ -98,7 +98,7 @@ func is_win(player_id:int) -> bool:
 	var result := check_chess_inline(player_id, win_count)
 	if !result.is_empty():
 		# change to 'win_handle' state
-		disable_cell_drop()
+		set_cell_droppable(false)
 		for crd:Vector2i in result:
 			var c := cells[crd] as BoardCell
 			c.change_content_color(Color.GREEN)
@@ -108,9 +108,9 @@ func is_win(player_id:int) -> bool:
 func is_draw() -> bool:
 	return rest_cell_count <= 0
 
-func disable_cell_drop() -> void:
+func set_cell_droppable(enable:bool) -> void:
 	for c:BoardCell in cells.values():
-		c.handle_drop = false
+		c.handle_drop = enable
 	pass
 
 func drop(cell:BoardCell) -> void:
@@ -127,7 +127,7 @@ func drop(cell:BoardCell) -> void:
 			let_win(current_player)
 			return
 		elif is_draw():
-			disable_cell_drop()
+			set_cell_droppable(false)
 			duel_draw.emit()
 		current_player = wrapi(current_player + 1, 0, players.size())
 		turn_count += 1
@@ -137,6 +137,9 @@ func pick(cell:BoardCell) -> void:
 	if cell.get_child_count() > 0:
 		for child in cell.get_children():
 			child.queue_free()
+	set_cell_droppable(true)
+	for c:BoardCell in cells.values():
+		c.change_content_color(Color.TRANSPARENT)
 	score[cell.coords] = -1
 	rest_cell_count += 1
 	turn_count -= 1
