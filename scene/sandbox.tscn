@@ -141,7 +141,7 @@ stretch_shrink = 3
 
 [node name="viewport" type="SubViewport" parent="layout/margin/aspect/game/world"]
 handle_input_locally = false
-size = Vector2i(2, 2)
+size = Vector2i(78, 78)
 render_target_update_mode = 4
 
 [node name="camera" type="Camera2D" parent="layout/margin/aspect/game/world/viewport"]

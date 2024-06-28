@@ -26,6 +26,7 @@ func _ready() -> void:
 	pointing.pivot_offset = Vector2(pointing.size.x / 2.0, pointing.size.y + 0.5)
 	button_replay.pressed.connect(replay)
 	button_giveup.pressed.connect(giveup)
+	button_undo.pressed.connect(undo)
 	replay()
 	pass
 
@@ -63,13 +64,11 @@ func replay() -> void:
 	board.player_changed.connect(_on_border_player_changed)
 	board.duel_win.connect(_on_duel_win)
 	board.duel_draw.connect(_on_duel_draw)
-	button_undo.pressed.connect(undo)
 	info_PC.nickname = board.players[0].nickname
 	info_ME.nickname = board.players[1].nickname
 	info_PC.image.texture = board.players[0].used_chess_image
 	info_ME.image.texture = board.players[1].used_chess_image
-	_on_border_player_changed(0)
-	# reset hostory
+	board.current_player = 1
 	pass
 
 func giveup() -> void:
@@ -78,6 +77,8 @@ func giveup() -> void:
 
 func undo() -> void:
 	board.history.undo()
+	if board.last_player == 1:
+		board.history.undo()
 	win_prompt.hide()
 	pass
 

@@ -19,4 +19,3 @@ func _get_nickname() -> String:
 	if !is_node_ready():
 		await ready
 	return label.text
-	pass

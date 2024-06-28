@@ -9,9 +9,11 @@ extends GridContainer
 var cells := {}
 var score := {}
 var current_player  := 0 : set = _set_current_player
+var last_player := -1
 var rest_cell_count := 0
 var turn_count := 0
 var history := UndoRedo.new()
+var finished := false
 
 signal chess_dropped(coords:Vector2i)
 signal player_changed(current:int)
@@ -25,12 +27,9 @@ signal duel_draw()
 #region events
 
 func _on_cell_dropped_chess(cell:BoardCell) -> void:
-	history.create_action(String.num(turn_count))
-	history.add_do_method(drop.bind(cell))
-	history.add_do_property(self, 'current_player', wrapi(current_player + 1, 0, players.size()))
-	history.add_undo_method(pick.bind(cell))
-	history.add_undo_property(self, 'current_player', current_player)
-	history.commit_action()
+	drop_by_player(cell)
+	if !finished:
+		await drop_by_ai()
 	pass
 
 #endregion
@@ -113,6 +112,26 @@ func set_cell_droppable(enable:bool) -> void:
 		c.handle_drop = enable
 	pass
 
+func drop_by_player(cell:BoardCell) -> void:
+	history.create_action(String.num(turn_count))
+	history.add_do_method(drop.bind(cell))
+	history.add_undo_property(self, 'current_player', current_player)
+	history.add_undo_property(self, 'last_player', last_player)
+	history.add_do_property(self, 'last_player', current_player)
+	history.add_do_property(self, 'current_player', wrapi(current_player + 1, 0, players.size()))
+	history.add_undo_method(pick.bind(cell))
+	history.commit_action()
+	pass
+
+func drop_by_ai() -> void:
+	set_cell_droppable(false)
+	for c:BoardCell in cells.values():
+		c.change_content_color(Color.TRANSPARENT)
+	await get_tree().create_timer(1.0).timeout
+	set_cell_droppable(true)
+	var rest_cells := cells.values().filter(func(c:BoardCell) -> bool: return c.get_child_count() < 1)
+	drop_by_player(rest_cells.pick_random())
+
 func drop(cell:BoardCell) -> void:
 	if cell.get_child_count() < 1:
 		var chess := preload("res://scene/prefab/chess.tscn").instantiate()
@@ -125,11 +144,12 @@ func drop(cell:BoardCell) -> void:
 
 		if is_win(current_player):
 			let_win(current_player)
+			finished = true
 			return
 		elif is_draw():
 			set_cell_droppable(false)
+			finished = true
 			duel_draw.emit()
-		current_player = wrapi(current_player + 1, 0, players.size())
 		turn_count += 1
 	pass
 
@@ -143,8 +163,8 @@ func pick(cell:BoardCell) -> void:
 	score[cell.coords] = -1
 	rest_cell_count += 1
 	turn_count -= 1
+	finished = false
 	pass
-
 
 #endregion
 
