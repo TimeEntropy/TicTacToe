@@ -63,7 +63,7 @@ func replay() -> void:
 	board.player_changed.connect(_on_border_player_changed)
 	board.duel_win.connect(_on_duel_win)
 	board.duel_draw.connect(_on_duel_draw)
-	button_undo.pressed.connect(board.history.undo)
+	button_undo.pressed.connect(undo)
 	info_PC.nickname = board.players[0].nickname
 	info_ME.nickname = board.players[1].nickname
 	info_PC.image.texture = board.players[0].used_chess_image
@@ -74,6 +74,11 @@ func replay() -> void:
 
 func giveup() -> void:
 	board.let_win(0)
+	pass
+
+func undo() -> void:
+	board.history.undo()
+	win_prompt.hide()
 	pass
 
 #endregion
