@@ -48,6 +48,11 @@ func _on_duel_draw() -> void:
 	win_prompt.text = 'DRAW!!!'
 	pass
 
+func _on_duel_giveup(player_id:int) -> void:
+	win_prompt.show()
+	win_prompt.text = '{0} GIVEUP!!!'.format([board.players[player_id].nickname])
+	pass
+
 #endregion
 
 #region tools
@@ -72,7 +77,7 @@ func replay() -> void:
 	pass
 
 func giveup() -> void:
-	board.let_win(0)
+	board.let_giveup(1)
 	pass
 
 func undo() -> void:
