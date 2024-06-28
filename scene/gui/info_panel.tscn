@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://c4omw5nt7rs1t"]
 
-[ext_resource type="StyleBox" uid="uid://b0fbcmigy2sy7" path="res://scene/panel_style.tres" id="1_cdgdf"]
+[ext_resource type="StyleBox" uid="uid://b0fbcmigy2sy7" path="res://resource/style/panel_style.tres" id="1_cdgdf"]
 [ext_resource type="Script" path="res://schema/gui/info_panel.gd" id="2_nvwbp"]
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_55dsp"]

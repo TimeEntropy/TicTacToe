@@ -1,8 +1,6 @@
 class_name BoardPanel
 extends GridContainer
 
-var ENUMS := preload("res://schema/core/enum.gd").new()
-
 @export_group('data')
 @export var layout  := Vector2i.ZERO : set = set_layout
 @export var players : Array[PlayerProfile] = []
@@ -66,23 +64,6 @@ func set_layout(value:Vector2i) -> void:
 			add_child(cell)
 			cells[cell.coords] = cell
 	rest_cell_count = value.x * value.y
-	pass
-
-func hide_border() -> void:
-	for i in get_child_count():
-		var cell  = get_child(i)
-		@warning_ignore("integer_division")
-		var coord = Vector2i(i % layout.x, i / layout.x)
-
-		if coord.x == (layout.x - 1):
-			cell.change_border_width(ENUMS.CELL_BORDER_FLAGS.RIGHT, 0)
-		elif coord.x == 0:
-			cell.change_border_width(ENUMS.CELL_BORDER_FLAGS.LEFT , 0)
-
-		if coord.y == (layout.y - 1):
-			cell.change_border_width(ENUMS.CELL_BORDER_FLAGS.DOWN , 0)
-		elif coord.y == 0:
-			cell.change_border_width(ENUMS.CELL_BORDER_FLAGS.UP   , 0)
 	pass
 
 func check_chess_inline(player_id:int, length:=3) -> Array[Vector2i]:

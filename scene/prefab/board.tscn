@@ -4,7 +4,7 @@
 [ext_resource type="Resource" uid="uid://c88xpg6xwo2od" path="res://resource/profile/PC.tres" id="2_o3v4r"]
 [ext_resource type="Resource" uid="uid://s57x5dqhitcw" path="res://resource/profile/ME.tres" id="3_tqiwf"]
 
-[node name="border" type="GridContainer"]
+[node name="board" type="GridContainer"]
 theme_override_constants/h_separation = 1
 theme_override_constants/v_separation = 1
 columns = 15

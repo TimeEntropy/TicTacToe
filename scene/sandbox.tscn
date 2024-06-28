@@ -1,9 +1,8 @@
-[gd_scene load_steps=12 format=3 uid="uid://bv43y3edsrvuq"]
+[gd_scene load_steps=11 format=3 uid="uid://bv43y3edsrvuq"]
 
-[ext_resource type="PackedScene" uid="uid://dy5n38bh77hrq" path="res://scene/prefab/border.tscn" id="1_ct5rg"]
 [ext_resource type="Script" path="res://scene/sandbox.gd" id="1_mhra8"]
 [ext_resource type="PackedScene" uid="uid://c4omw5nt7rs1t" path="res://scene/gui/info_panel.tscn" id="2_akehi"]
-[ext_resource type="StyleBox" uid="uid://b0fbcmigy2sy7" path="res://scene/panel_style.tres" id="3_aiwrc"]
+[ext_resource type="StyleBox" uid="uid://b0fbcmigy2sy7" path="res://resource/style/panel_style.tres" id="3_aiwrc"]
 [ext_resource type="Texture2D" uid="uid://c5rmcciht2f6x" path="res://asset/image/pointing.png" id="3_ddg06"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yh745"]
@@ -17,9 +16,9 @@ border_color = Color(1, 1, 1, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wtrbm"]
 resource_local_to_scene = true
 content_margin_left = 5.0
-content_margin_top = 20.0
+content_margin_top = 10.0
 content_margin_right = 5.0
-content_margin_bottom = 20.0
+content_margin_bottom = 10.0
 bg_color = Color(0, 0, 0, 1)
 border_width_left = 1
 border_width_top = 1
@@ -83,13 +82,17 @@ expand_margin_top = 1.0
 expand_margin_right = 1.0
 expand_margin_bottom = 1.0
 
-[node name="sandbox" type="Node" node_paths=PackedStringArray("win_prompt", "pointing", "board", "info_PC", "info_ME")]
+[node name="sandbox" type="Node" node_paths=PackedStringArray("game_viewport", "camera", "win_prompt", "pointing", "info_PC", "info_ME", "button_replay", "button_undo", "button_surrender")]
 script = ExtResource("1_mhra8")
+game_viewport = NodePath("layout/margin/aspect/game/world/viewport")
+camera = NodePath("layout/margin/aspect/game/world/viewport/camera")
 win_prompt = NodePath("layout/margin/win_prompt")
 pointing = NodePath("layout/infos/separator/pointing")
-board = NodePath("layout/margin/aspect/game/world/viewport/border")
 info_PC = NodePath("layout/infos/margin_1/PC/info")
 info_ME = NodePath("layout/infos/margin_2/ME/info")
+button_replay = NodePath("layout/infos/margin_2/ME/buttons/replay")
+button_undo = NodePath("layout/infos/margin_2/ME/buttons/undo")
+button_surrender = NodePath("layout/infos/margin_2/ME/buttons/giveup")
 
 [node name="border" type="Panel" parent="."]
 anchors_preset = 15
@@ -138,21 +141,10 @@ stretch_shrink = 3
 
 [node name="viewport" type="SubViewport" parent="layout/margin/aspect/game/world"]
 handle_input_locally = false
-size = Vector2i(76, 76)
+size = Vector2i(78, 78)
 render_target_update_mode = 4
 
 [node name="camera" type="Camera2D" parent="layout/margin/aspect/game/world/viewport"]
-anchor_mode = 0
-
-[node name="border" parent="layout/margin/aspect/game/world/viewport" instance=ExtResource("1_ct5rg")]
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-grow_horizontal = 2
-grow_vertical = 2
-columns = 3
 
 [node name="infos" type="VBoxContainer" parent="layout"]
 layout_mode = 2
@@ -160,11 +152,11 @@ size_flags_horizontal = 8
 
 [node name="margin_1" type="MarginContainer" parent="layout/infos"]
 layout_mode = 2
-size_flags_vertical = 3
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 20
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 20
+size_flags_vertical = 10
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
 
 [node name="PC" type="VBoxContainer" parent="layout/infos/margin_1"]
 layout_mode = 2
@@ -200,14 +192,15 @@ flip_v = true
 
 [node name="margin_2" type="MarginContainer" parent="layout/infos"]
 layout_mode = 2
-size_flags_vertical = 3
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 20
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 20
+size_flags_vertical = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
 
 [node name="ME" type="VBoxContainer" parent="layout/infos/margin_2"]
 layout_mode = 2
+theme_override_constants/separation = 10
 
 [node name="info" parent="layout/infos/margin_2/ME" instance=ExtResource("2_akehi")]
 layout_mode = 2
@@ -216,33 +209,32 @@ nickname = "TimeEntropy"
 
 [node name="buttons" type="VBoxContainer" parent="layout/infos/margin_2/ME"]
 layout_mode = 2
-size_flags_vertical = 10
+size_flags_horizontal = 3
+size_flags_vertical = 3
 
-[node name="pause" type="Button" parent="layout/infos/margin_2/ME/buttons"]
+[node name="replay" type="Button" parent="layout/infos/margin_2/ME/buttons"]
 layout_mode = 2
+focus_mode = 0
 theme_override_styles/normal = ExtResource("3_aiwrc")
 theme_override_styles/hover = SubResource("StyleBoxFlat_6t2lk")
 theme_override_styles/pressed = ExtResource("3_aiwrc")
 theme_override_styles/disabled = ExtResource("3_aiwrc")
-theme_override_styles/focus = ExtResource("3_aiwrc")
-text = "PAUSE"
+text = "REPLAY"
 
-[node name="skip" type="Button" parent="layout/infos/margin_2/ME/buttons"]
+[node name="undo" type="Button" parent="layout/infos/margin_2/ME/buttons"]
 layout_mode = 2
+focus_mode = 0
 theme_override_styles/normal = ExtResource("3_aiwrc")
 theme_override_styles/hover = SubResource("StyleBoxFlat_6t2lk")
 theme_override_styles/pressed = ExtResource("3_aiwrc")
 theme_override_styles/disabled = ExtResource("3_aiwrc")
-theme_override_styles/focus = ExtResource("3_aiwrc")
-text = "SKIP"
+text = "UNDO"
 
-[node name="surrender" type="Button" parent="layout/infos/margin_2/ME/buttons"]
+[node name="giveup" type="Button" parent="layout/infos/margin_2/ME/buttons"]
 layout_mode = 2
+focus_mode = 0
 theme_override_styles/normal = ExtResource("3_aiwrc")
 theme_override_styles/hover = SubResource("StyleBoxFlat_6t2lk")
 theme_override_styles/pressed = ExtResource("3_aiwrc")
 theme_override_styles/disabled = ExtResource("3_aiwrc")
-theme_override_styles/focus = ExtResource("3_aiwrc")
-text = "SURRENDER"
-
-[connection signal="player_changed" from="layout/margin/aspect/game/world/viewport/border" to="." method="_on_border_player_changed"]
+text = "GIVE-UP"
