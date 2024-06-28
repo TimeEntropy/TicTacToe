@@ -1,0 +1,43 @@
+[gd_scene load_steps=4 format=3 uid="uid://c4omw5nt7rs1t"]
+
+[ext_resource type="StyleBox" uid="uid://b0fbcmigy2sy7" path="res://scene/panel_style.tres" id="1_cdgdf"]
+[ext_resource type="Script" path="res://schema/gui/info_panel.gd" id="2_nvwbp"]
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_55dsp"]
+
+[node name="info_panel" type="PanelContainer" node_paths=PackedStringArray("image", "label")]
+custom_minimum_size = Vector2(64, 30)
+offset_right = 106.0
+offset_bottom = 126.0
+theme_override_styles/panel = ExtResource("1_cdgdf")
+script = ExtResource("2_nvwbp")
+image = NodePath("margin/infos/image")
+label = NodePath("margin/infos/label")
+nickname = "PLACEHOLDER_NAME"
+metadata/_edit_group_ = true
+
+[node name="margin" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="infos" type="VBoxContainer" parent="margin"]
+layout_mode = 2
+
+[node name="image" type="TextureRect" parent="margin/infos"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+texture = SubResource("PlaceholderTexture2D_55dsp")
+expand_mode = 5
+
+[node name="label" type="Label" parent="margin/infos"]
+clip_contents = true
+custom_minimum_size = Vector2(96, 16)
+layout_mode = 2
+text = "PLACEHOLDER_NAME"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 1
+clip_text = true

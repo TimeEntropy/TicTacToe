@@ -1,8 +1,7 @@
+class_name BoardPanel
 extends GridContainer
 
 var ENUMS := preload("res://schema/core/enum.gd").new()
-
-@export_group('node')
 
 @export_group('data')
 @export var layout  := Vector2i.ZERO : set = set_layout
@@ -11,8 +10,12 @@ var ENUMS := preload("res://schema/core/enum.gd").new()
 
 var cells := {}
 var score := {}
-var current_player  := 0
+var current_player  := 0 : set = _set_current_player
 var rest_cell_count := 0
+
+signal player_changed(current:int)
+signal duel_win(player_id:int)
+signal duel_draw()
 
 #region overrides
 
@@ -30,10 +33,11 @@ func _on_cell_dropped_chess(cell:BoardCell) -> void:
 		rest_cell_count -= 1
 
 		if is_win(current_player):
-			print('player {0} win!!!'.format([players[current_player].nickname]))
+			duel_win.emit(current_player)
 			return
 		elif is_draw():
-			print('draw! no player win!')
+			disable_cell_drop()
+			duel_draw.emit()
 
 		current_player = wrapi(current_player + 1, 0, players.size())
 	pass
@@ -115,15 +119,27 @@ func is_win(player_id:int) -> bool:
 	var result := check_chess_inline(player_id, win_count)
 	if !result.is_empty():
 		# change to 'win_handle' state
-		for c:BoardCell in cells.values():
-			c.handle_input = false
+		disable_cell_drop()
 		for crd:Vector2i in result:
 			var c := cells[crd] as BoardCell
-			c.change_content_color(Color.BLUE)
+			c.change_content_color(Color.GREEN)
 		return true
 	return false
 
 func is_draw() -> bool:
 	return rest_cell_count <= 0
+
+func disable_cell_drop() -> void:
+	for c:BoardCell in cells.values():
+		c.handle_drop = false
+	pass
+
+#endregion
+
+#region setget
+
+func _set_current_player(value:int) -> void:
+	current_player = value
+	player_changed.emit(current_player)
 
 #endregion

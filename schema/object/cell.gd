@@ -5,14 +5,14 @@ var ENUMS := preload("res://schema/core/enum.gd").new()
 
 @export_group('data')
 @export var coords : Vector2i
-@export var handle_input := true
+@export var handle_drop := true
 
 signal dropped_chess(cell:BoardCell)
 
 #region overrides
 
 func _gui_input(event: InputEvent) -> void:
-	if handle_input:
+	if handle_drop:
 		if (event is InputEventMouseButton) and event.is_pressed():
 			match event.button_index:
 				MOUSE_BUTTON_LEFT : dropped_chess.emit(self)
@@ -23,12 +23,12 @@ func _gui_input(event: InputEvent) -> void:
 #region events
 
 func _on_mouse_entered() -> void:
-	if handle_input:
+	if handle_drop:
 		change_content_color(Color.ORANGE_RED)
 	pass
 
 func _on_mouse_exited() -> void:
-	if handle_input:
+	if handle_drop:
 		change_content_color(Color.TRANSPARENT)
 	pass
 

@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="PlayerProfile" load_steps=3 format=3 uid="uid://c88xpg6xwo2od"]
+
+[ext_resource type="Script" path="res://schema/data/player.gd" id="1_tca3v"]
+[ext_resource type="Texture2D" uid="uid://cqyak7pqy6c1g" path="res://asset/image/chess/circle.png" id="2_l4f8l"]
+
+[resource]
+script = ExtResource("1_tca3v")
+nickname = "Mr.God"
+used_chess_image = ExtResource("2_l4f8l")

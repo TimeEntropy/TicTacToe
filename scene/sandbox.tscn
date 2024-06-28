@@ -1,26 +1,150 @@
-[gd_scene load_steps=2 format=3 uid="uid://bv43y3edsrvuq"]
+[gd_scene load_steps=12 format=3 uid="uid://bv43y3edsrvuq"]
 
 [ext_resource type="PackedScene" uid="uid://dy5n38bh77hrq" path="res://scene/prefab/border.tscn" id="1_ct5rg"]
+[ext_resource type="Script" path="res://scene/sandbox.gd" id="1_mhra8"]
+[ext_resource type="PackedScene" uid="uid://c4omw5nt7rs1t" path="res://scene/gui/info_panel.tscn" id="2_akehi"]
+[ext_resource type="StyleBox" uid="uid://b0fbcmigy2sy7" path="res://scene/panel_style.tres" id="3_aiwrc"]
+[ext_resource type="Texture2D" uid="uid://c5rmcciht2f6x" path="res://asset/image/pointing.png" id="3_ddg06"]
 
-[node name="sandbox" type="Node2D"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yh745"]
+draw_center = false
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 1)
 
-[node name="game_layer" type="CanvasLayer" parent="."]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wtrbm"]
+resource_local_to_scene = true
+content_margin_left = 5.0
+content_margin_top = 20.0
+content_margin_right = 5.0
+content_margin_bottom = 20.0
+bg_color = Color(0, 0, 0, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 1)
 
-[node name="world" type="SubViewportContainer" parent="game_layer"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hs5kh"]
+resource_local_to_scene = true
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0, 0, 0, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 1)
+expand_margin_left = 1.0
+expand_margin_top = 1.0
+expand_margin_right = 1.0
+expand_margin_bottom = 1.0
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_0ydjj"]
+color = Color(1, 1, 1, 1)
+grow_begin = -20.0
+grow_end = -20.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gdktc"]
+resource_local_to_scene = true
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0, 0, 0, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 1)
+expand_margin_left = 1.0
+expand_margin_top = 1.0
+expand_margin_right = 1.0
+expand_margin_bottom = 1.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6t2lk"]
+resource_local_to_scene = true
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(1, 0, 0, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 1)
+expand_margin_left = 1.0
+expand_margin_top = 1.0
+expand_margin_right = 1.0
+expand_margin_bottom = 1.0
+
+[node name="sandbox" type="Node" node_paths=PackedStringArray("win_prompt", "pointing", "board", "info_PC", "info_ME")]
+script = ExtResource("1_mhra8")
+win_prompt = NodePath("layout/margin/win_prompt")
+pointing = NodePath("layout/infos/separator/pointing")
+board = NodePath("layout/margin/aspect/game/world/viewport/border")
+info_PC = NodePath("layout/infos/margin_1/PC/info")
+info_ME = NodePath("layout/infos/margin_2/ME/info")
+
+[node name="border" type="Panel" parent="."]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-stretch = true
-stretch_shrink = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_yh745")
 
-[node name="viewport" type="SubViewport" parent="game_layer/world"]
+[node name="layout" type="HBoxContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="margin" type="MarginContainer" parent="layout"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="win_prompt" type="Label" parent="layout/margin"]
+visible = false
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_styles/normal = SubResource("StyleBoxFlat_wtrbm")
+text = "TimeEntropy WIN!!!"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="aspect" type="AspectRatioContainer" parent="layout/margin"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="game" type="PanelContainer" parent="layout/margin/aspect"]
+layout_mode = 2
+theme_override_styles/panel = ExtResource("3_aiwrc")
+metadata/_edit_group_ = true
+
+[node name="world" type="SubViewportContainer" parent="layout/margin/aspect/game"]
+layout_mode = 2
+stretch = true
+stretch_shrink = 3
+
+[node name="viewport" type="SubViewport" parent="layout/margin/aspect/game/world"]
 handle_input_locally = false
-size = Vector2i(100, 100)
+size = Vector2i(76, 76)
 render_target_update_mode = 4
 
-[node name="border" parent="game_layer/world/viewport" instance=ExtResource("1_ct5rg")]
+[node name="camera" type="Camera2D" parent="layout/margin/aspect/game/world/viewport"]
+anchor_mode = 0
+
+[node name="border" parent="layout/margin/aspect/game/world/viewport" instance=ExtResource("1_ct5rg")]
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -29,7 +153,96 @@ anchor_bottom = 0.5
 grow_horizontal = 2
 grow_vertical = 2
 columns = 3
-layout = Vector2i(3, 3)
-win_count = 3
 
-[node name="gui_layer" type="CanvasLayer" parent="."]
+[node name="infos" type="VBoxContainer" parent="layout"]
+layout_mode = 2
+size_flags_horizontal = 8
+
+[node name="margin_1" type="MarginContainer" parent="layout/infos"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="PC" type="VBoxContainer" parent="layout/infos/margin_1"]
+layout_mode = 2
+
+[node name="info" parent="layout/infos/margin_1/PC" instance=ExtResource("2_akehi")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_hs5kh")
+nickname = "Mr.God"
+
+[node name="separator" type="HSeparator" parent="layout/infos"]
+layout_mode = 2
+theme_override_constants/separation = 0
+theme_override_styles/separator = SubResource("StyleBoxLine_0ydjj")
+
+[node name="pointing" type="TextureRect" parent="layout/infos/separator"]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -8.0
+offset_top = -16.0
+offset_right = 8.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(12, 16.5)
+texture = ExtResource("3_ddg06")
+expand_mode = 3
+flip_h = true
+flip_v = true
+
+[node name="margin_2" type="MarginContainer" parent="layout/infos"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="ME" type="VBoxContainer" parent="layout/infos/margin_2"]
+layout_mode = 2
+
+[node name="info" parent="layout/infos/margin_2/ME" instance=ExtResource("2_akehi")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_gdktc")
+nickname = "TimeEntropy"
+
+[node name="buttons" type="VBoxContainer" parent="layout/infos/margin_2/ME"]
+layout_mode = 2
+size_flags_vertical = 10
+
+[node name="pause" type="Button" parent="layout/infos/margin_2/ME/buttons"]
+layout_mode = 2
+theme_override_styles/normal = ExtResource("3_aiwrc")
+theme_override_styles/hover = SubResource("StyleBoxFlat_6t2lk")
+theme_override_styles/pressed = ExtResource("3_aiwrc")
+theme_override_styles/disabled = ExtResource("3_aiwrc")
+theme_override_styles/focus = ExtResource("3_aiwrc")
+text = "PAUSE"
+
+[node name="skip" type="Button" parent="layout/infos/margin_2/ME/buttons"]
+layout_mode = 2
+theme_override_styles/normal = ExtResource("3_aiwrc")
+theme_override_styles/hover = SubResource("StyleBoxFlat_6t2lk")
+theme_override_styles/pressed = ExtResource("3_aiwrc")
+theme_override_styles/disabled = ExtResource("3_aiwrc")
+theme_override_styles/focus = ExtResource("3_aiwrc")
+text = "SKIP"
+
+[node name="surrender" type="Button" parent="layout/infos/margin_2/ME/buttons"]
+layout_mode = 2
+theme_override_styles/normal = ExtResource("3_aiwrc")
+theme_override_styles/hover = SubResource("StyleBoxFlat_6t2lk")
+theme_override_styles/pressed = ExtResource("3_aiwrc")
+theme_override_styles/disabled = ExtResource("3_aiwrc")
+theme_override_styles/focus = ExtResource("3_aiwrc")
+text = "SURRENDER"
+
+[connection signal="player_changed" from="layout/margin/aspect/game/world/viewport/border" to="." method="_on_border_player_changed"]
