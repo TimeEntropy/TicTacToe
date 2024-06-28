@@ -15,9 +15,12 @@ var turn_count := 0
 var history := UndoRedo.new()
 var finished := false
 
+var ai_minds := {}
+
 signal chess_dropped(coords:Vector2i)
 signal player_changed(current:int)
 signal duel_win(player_id:int)
+signal duel_giveup(player_id:int)
 signal duel_draw()
 
 #region overrides
@@ -58,7 +61,7 @@ func set_layout(value:Vector2i) -> void:
 	rest_cell_count = value.x * value.y
 	pass
 
-func check_chess_inline(player_id:int, length:=3) -> Array[Vector2i]:
+func check_chess_inline(player_id:int, length:=3) -> Dictionary:
 	var CHECK_AXIS_INLINE := func(coords:Vector2i, dir:Vector2i) -> Array[Vector2i]:
 		var output_coords : Array[Vector2i] = []
 		for i in length:
@@ -69,28 +72,33 @@ func check_chess_inline(player_id:int, length:=3) -> Array[Vector2i]:
 				return []
 		return output_coords
 
-	var CHECK_INLINE := func(coords:Vector2i) -> Array[Vector2i]:
+	var CHECK_INLINE := func(coords:Vector2i) -> Dictionary:
 		var x_axis := CHECK_AXIS_INLINE.call(coords, Vector2i( 1, 0)) as Array[Vector2i]
 		var y_axis := CHECK_AXIS_INLINE.call(coords, Vector2i( 0, 1)) as Array[Vector2i]
 		var skew_1 := CHECK_AXIS_INLINE.call(coords, Vector2i( 1, 1)) as Array[Vector2i]
 		var skew_2 := CHECK_AXIS_INLINE.call(coords, Vector2i(-1, 1)) as Array[Vector2i]
-		var result : Array[Vector2i] = []
-		result.append_array(x_axis)
-		result.append_array(y_axis)
-		result.append_array(skew_1)
-		result.append_array(skew_2)
+		var result := {}
+		if !x_axis.is_empty(): result['1'] = x_axis
+		if !y_axis.is_empty(): result['2'] = y_axis
+		if !skew_1.is_empty(): result['3'] = skew_1
+		if !skew_2.is_empty(): result['4'] = skew_2
 		return result
 
 	for y in layout.y:
 		for x in layout.x:
-			var result := CHECK_INLINE.call(Vector2i(x, y)) as Array[Vector2i]
+			var result := CHECK_INLINE.call(Vector2i(x, y)) as Dictionary
 			if !result.is_empty():
 				return result
-	return []
+	return {}
 
 func let_win(player_id:int) -> void:
 	set_cell_droppable(false)
 	duel_win.emit(player_id)
+	pass
+
+func let_giveup(player_id:int) -> void:
+	set_cell_droppable(false)
+	duel_giveup.emit(player_id)
 	pass
 
 func is_win(player_id:int) -> bool:
@@ -98,9 +106,10 @@ func is_win(player_id:int) -> bool:
 	if !result.is_empty():
 		# change to 'win_handle' state
 		set_cell_droppable(false)
-		for crd:Vector2i in result:
-			var c := cells[crd] as BoardCell
-			c.change_content_color(Color.GREEN)
+		for case in result:
+			for crd:Vector2i in result[case]:
+				var c := cells[crd] as BoardCell
+				c.change_content_color(Color.GREEN)
 		return true
 	return false
 
@@ -127,10 +136,13 @@ func drop_by_ai() -> void:
 	set_cell_droppable(false)
 	for c:BoardCell in cells.values():
 		c.change_content_color(Color.TRANSPARENT)
-	await get_tree().create_timer(1.0).timeout
+	await get_tree().create_timer(randf_range(0.2, 2.0)).timeout
 	set_cell_droppable(true)
-	var rest_cells := cells.values().filter(func(c:BoardCell) -> bool: return c.get_child_count() < 1)
-	drop_by_player(rest_cells.pick_random())
+	var rest_cells := ai_think()
+	if !rest_cells.is_empty():
+		drop_by_player(rest_cells[0])
+	else:
+		let_giveup(0)
 
 func drop(cell:BoardCell) -> void:
 	if cell.get_child_count() < 1:
@@ -165,6 +177,32 @@ func pick(cell:BoardCell) -> void:
 	turn_count -= 1
 	finished = false
 	pass
+
+func ai_think() -> Array[BoardCell]:
+	var FIND_CONNECT_CELLS := func(connected_coords:Dictionary) -> Array[BoardCell]:
+		var ret : Array[BoardCell] = []
+		if !connected_coords.is_empty():
+			var region := Rect2i(Vector2i.ZERO, layout)
+			var check_coords := []
+			for case in connected_coords:
+				match case:
+					'1': check_coords = [connected_coords['1'][0] + Vector2i(-1, 0), connected_coords['1'][-1] + Vector2i( 1, 0)]
+					'2': check_coords = [connected_coords['2'][0] + Vector2i( 0,-1), connected_coords['2'][-1] + Vector2i( 0, 1)]
+					'3': check_coords = [connected_coords['3'][0] + Vector2i(-1,-1), connected_coords['3'][-1] + Vector2i( 1, 1)]
+					'4': check_coords = [connected_coords['4'][0] + Vector2i( 1,-1), connected_coords['4'][-1] + Vector2i(-1, 1)]
+				for crd:Vector2i in check_coords:
+					if region.has_point(crd):
+						var c := cells[crd] as BoardCell
+						if c.get_child_count() < 1:
+							ret.append(c)
+		return ret
+
+	var result:Array[BoardCell] = []
+	result.append_array(FIND_CONNECT_CELLS.call(check_chess_inline(0, 2)))
+	result.append_array(FIND_CONNECT_CELLS.call(check_chess_inline(1, 2)))
+	if result.is_empty():
+		result.append_array(cells.values().filter(func(c:BoardCell) -> bool: return c.get_child_count() < 1))
+	return result
 
 #endregion
 
