@@ -16,12 +16,10 @@ nickname = "ME"
 used_chess_image = ExtResource("4_mcky7")
 
 [node name="border" type="GridContainer"]
-offset_left = 46.0
-offset_top = 18.0
-offset_right = 46.0
-offset_bottom = 18.0
 theme_override_constants/h_separation = 1
 theme_override_constants/v_separation = 1
+columns = 15
 script = ExtResource("1_dulgy")
-layout = Vector2i(3, 3)
+layout = Vector2i(15, 15)
 players = Array[ExtResource("2_qnjln")]([SubResource("Resource_o4ctq"), SubResource("Resource_3trao")])
+win_count = 5
