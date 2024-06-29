@@ -7,7 +7,6 @@
 [node name="board" type="GridContainer"]
 theme_override_constants/h_separation = 1
 theme_override_constants/v_separation = 1
-columns = 15
 script = ExtResource("1_dulgy")
 layout = Vector2i(3, 3)
 players = Array[Resource("res://schema/data/player.gd")]([ExtResource("2_o3v4r"), ExtResource("3_tqiwf")])

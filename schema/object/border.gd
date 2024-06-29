@@ -8,24 +8,18 @@ extends GridContainer
 
 var cells := {}
 var score := {}
-var current_player  := 0 : set = _set_current_player
+var current_player := 0 : set = _set_current_player
 var last_player := -1
 var rest_cell_count := 0
 var turn_count := 0
 var history := UndoRedo.new()
 var finished := false
 
-var ai_minds := {}
-
 signal chess_dropped(coords:Vector2i)
 signal player_changed(current:int)
 signal duel_win(player_id:int)
 signal duel_giveup(player_id:int)
 signal duel_draw()
-
-#region overrides
-
-#endregion
 
 #region events
 
@@ -67,9 +61,9 @@ func check_chess_inline(player_id:int, length:=3) -> Dictionary:
 		for i in length:
 			var tcrds := coords + i * dir
 			var tid   := score.get(tcrds, -1) as int
-			output_coords.append(tcrds)
 			if tid != player_id:
 				return []
+			output_coords.append(tcrds)
 		return output_coords
 
 	var CHECK_INLINE := func(coords:Vector2i) -> Dictionary:
@@ -136,7 +130,8 @@ func drop_by_ai() -> void:
 	set_cell_droppable(false)
 	for c:BoardCell in cells.values():
 		c.change_content_color(Color.TRANSPARENT)
-	await get_tree().create_timer(randf_range(0.2, 2.0)).timeout
+	# just wait a moment...
+	await get_tree().create_timer(randf_range(0.1, 1.0)).timeout
 	set_cell_droppable(true)
 	var rest_cells := ai_think()
 	if !rest_cells.is_empty():
@@ -178,6 +173,7 @@ func pick(cell:BoardCell) -> void:
 	finished = false
 	pass
 
+# stupid AI...
 func ai_think() -> Array[BoardCell]:
 	var FIND_CONNECT_CELLS := func(connected_coords:Dictionary) -> Array[BoardCell]:
 		var ret : Array[BoardCell] = []

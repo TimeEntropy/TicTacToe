@@ -34,6 +34,11 @@ func _ready() -> void:
 
 #region events
 
+@warning_ignore("unused_parameter")
+func _on_board_chess_dropped(coords:Vector2i) -> void:
+	button_undo.disabled = false
+	pass
+
 func _on_border_player_changed(current: int) -> void:
 	pointing.rotation_degrees = current * 180.0
 	pass
@@ -41,6 +46,7 @@ func _on_border_player_changed(current: int) -> void:
 func _on_duel_win(player_id:int) -> void:
 	win_prompt.show()
 	win_prompt.text = '{0} WIN!!!'.format([board.players[player_id].nickname])
+	button_giveup.disabled = true
 	pass
 
 func _on_duel_draw() -> void:
@@ -66,18 +72,27 @@ func replay() -> void:
 	# reset nodes
 	camera.position = board.size / 2.0
 	win_prompt.hide()
+
+	board.chess_dropped.connect(_on_board_chess_dropped)
 	board.player_changed.connect(_on_border_player_changed)
 	board.duel_win.connect(_on_duel_win)
 	board.duel_draw.connect(_on_duel_draw)
+	board.duel_giveup.connect(_on_duel_giveup)
+	board.current_player = 1
+
 	info_PC.nickname = board.players[0].nickname
 	info_ME.nickname = board.players[1].nickname
 	info_PC.image.texture = board.players[0].used_chess_image
 	info_ME.image.texture = board.players[1].used_chess_image
-	board.current_player = 1
+
+	button_giveup.disabled = false
+	button_undo.disabled = true
 	pass
 
 func giveup() -> void:
 	board.let_giveup(1)
+	button_undo.disabled = true
+	button_giveup.disabled = true
 	pass
 
 func undo() -> void:
@@ -85,6 +100,8 @@ func undo() -> void:
 	if board.last_player == 1:
 		board.history.undo()
 	win_prompt.hide()
+	button_undo.disabled = !board.history.has_undo()
+	button_giveup.disabled = false
 	pass
 
 #endregion
